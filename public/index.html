@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CahilApp - AI Language Learning</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+</head>
+
+<body>
+    <!-- Login Screen -->
+    <div id="login-screen" class="screen active">
+        <div class="glass-panel">
+            <h1>Cahil<span class="highlight">App</span></h1>
+            <p>Your AI-powered language learning companion.</p>
+            <button id="google-login-btn" class="primary-btn">
+                <svg viewBox="0 0 24 24" width="24" height="24" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                        fill="#4285F4" />
+                    <path
+                        d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                        fill="#34A853" />
+                    <path
+                        d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+                        fill="#FBBC05" />
+                    <path
+                        d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+                        fill="#EA4335" />
+                    <path d="M1 1h22v22H1z" fill="none" />
+                </svg>
+                Continue with Google
+            </button>
+        </div>
+    </div>
+
+    <!-- App Screen -->
+    <div id="app-screen" class="screen">
+        <header>
+            <div class="logo">Cahil<span class="highlight">App</span></div>
+            <div class="user-info">
+                <span id="user-tokens" class="highlight"
+                    style="font-weight: 600; display: none; background: rgba(255, 123, 0, 0.1); padding: 4px 12px; border-radius: 20px;">🪙
+                    0</span>
+
+                <div class="notification-container" style="position: relative; display: inline-block;">
+                    <div id="notification-icon"
+                        style="cursor: pointer; display: flex; align-items: center; background: rgba(255, 255, 255, 0.1); padding: 8px 12px; border-radius: 20px; transition: all 0.3s ease;">
+                        <span>🔔</span>
+                        <span id="notification-badge"
+                            style="display: none; background: #ff5252; color: white; border-radius: 50%; padding: 2px 6px; font-size: 0.7rem; position: absolute; top: -5px; right: -5px; font-weight: bold;">0</span>
+                    </div>
+                    <div id="notification-dropdown-menu"
+                        style="display: none; position: absolute; top: 110%; right: 0; background: var(--panel-bg); border: 1px solid var(--panel-border); border-radius: 12px; padding: 15px; width: 300px; backdrop-filter: var(--glass-blur); z-index: 200; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+                        <h4
+                            style="margin: 0 0 10px 0; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px;">
+                            Notifications</h4>
+                        <div id="notification-list"
+                            style="max-height: 300px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px;">
+                            <div style="color: var(--text-muted); text-align: center; font-size: 0.9rem;">No
+                                notifications yet.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="profile-dropdown-container" style="position: relative; display: inline-block;">
+                    <div id="profile-icon"
+                        style="cursor: pointer; display: flex; align-items: center; gap: 8px; background: rgba(255, 255, 255, 0.1); padding: 8px 16px; border-radius: 20px; transition: all 0.3s ease;">
+                        <span>👤</span>
+                        <span id="user-name-display" style="font-weight: 600;">Welcome!</span>
+                    </div>
+                    <div id="profile-dropdown-menu"
+                        style="display: none; position: absolute; top: 110%; right: 0; background: var(--panel-bg); border: 1px solid var(--panel-border); border-radius: 12px; padding: 8px; min-width: 150px; backdrop-filter: var(--glass-blur); z-index: 200;">
+                        <button id="logout-btn" class="secondary-btn"
+                            style="width: 100%; justify-content: flex-start; color: #ff5252;">Logout</button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="tabs-wrapper">
+            <nav class="tabs-nav">
+                <button class="tab-btn active" data-target="generator-section" id="tab-generate">Generate</button>
+                <button class="tab-btn" data-target="daily-section" id="tab-daily" style="position: relative;">Daily Challenge<span id="daily-tab-bubble" class="tab-bubble" style="display: none;">🪙 Kazan!</span></button>
+                <button class="tab-btn" data-target="past-texts-section" id="tab-past-texts">My Texts</button>
+                <button class="tab-btn" data-target="dictionary-section" id="tab-dictionary">Vocabulary</button>
+                <button class="tab-btn" data-target="stats-section" id="tab-stats">Stats</button>
+                <button class="tab-btn" data-target="admin-section" id="tab-admin"
+                    style="display: none; background: rgba(255, 0, 0, 0.1); color: #ff5252; border: 1px solid rgba(255, 82, 82, 0.3);">Admin
+                    Panel</button>
+            </nav>
+        </div>
+
+        <main class="container">
+            <!-- Generator Section -->
+            <section id="generator-section" class="tab-section active glass-panel">
+                <h2>Generate Learning Material</h2>
+                <form id="generate-form">
+                    <div class="input-group">
+                        <label for="topic" style="display: flex; justify-content: space-between;">
+                            <span>Topic</span>
+                            <button type="button" id="random-topic-btn"
+                                style="background: none; border: none; color: var(--primary-color); cursor: pointer; font-size: 0.9rem; padding: 0;">🎲
+                                Random</button>
+                        </label>
+                        <input type="text" id="topic" placeholder="e.g. Travel to space, Cooking pasta" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="level">CEFR Level</label>
+                        <select id="level" required>
+                            <option value="A1">A1 - Beginner</option>
+                            <option value="A2">A2 - Elementary</option>
+                            <option value="B1">B1 - Intermediate</option>
+                            <option value="B2">B2 - Upper Intermediate</option>
+                            <option value="C1">C1 - Advanced</option>
+                            <option value="C2">C2 - Proficient</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label for="word-count" style="display: flex; justify-content: space-between;">
+                            <span>Target Word Count</span>
+                            <span id="word-count-display" class="highlight">200 words</span>
+                        </label>
+                        <input type="range" id="word-count" min="50" max="1000" step="10" value="200"
+                            class="styled-slider">
+                    </div>
+                    <div class="input-group" style="display: flex; align-items: center; gap: 10px; margin-top: -8px;">
+                        <input type="checkbox" id="generate-questions-checkbox" style="width: auto; cursor: pointer; accent-color: var(--primary);">
+                        <label for="generate-questions-checkbox" style="margin-bottom: 0; cursor: pointer; display: flex; align-items: center; gap: 6px; color: var(--text-main);">
+                            Generate Questions <span style="color: var(--primary); font-size: 0.8rem; font-weight: 600;">(+2 tokens)</span>
+                        </label>
+                    </div>
+                    <button type="submit" id="generate-btn" class="primary-btn">
+                        <span class="btn-text" id="btn-text">Generate Story (2 Tokens)</span>
+                        <div class="spinner" id="generate-spinner" style="display: none;"></div>
+                    </button>
+                </form>
+
+                <div id="results-section" class="results-section"
+                    style="display: none; margin-top: 30px; padding-top: 30px; border-top: 1px solid var(--panel-border);">
+                    <h2 id="result-title" class="highlight"></h2>
+                    <div class="content-box">
+                        <p id="result-content"></p>
+                    </div>
+
+                    <!-- Sorular Bölümü -->
+                    <div id="generate-questions-section" style="display: none; margin-top: 30px; padding-top: 30px; border-top: 1px solid var(--panel-border);">
+                        <div id="generate-questions-loading" style="text-align: center; padding: 20px;">
+                            <div class="spinner" style="margin: 0 auto 12px;"></div>
+                            <span style="color: var(--text-muted); font-size: 0.9rem;">Generating questions... (2 tokens)</span>
+                        </div>
+                        <div id="generate-questions-container" style="display: none;">
+                            <h3 style="color: var(--primary); margin-bottom: 16px;">Reading Comprehension</h3>
+                            <div id="generate-questions-list"></div>
+                            <button id="generate-questions-submit-btn" class="primary-btn" style="width: 100%; margin-top: 20px; display: none;">
+                                <span class="btn-text">Yanıtları Gönder</span>
+                            </button>
+                        </div>
+                        <div id="generate-questions-result" style="display: none; text-align: center; padding: 30px 0;">
+                            <h3 style="color: var(--primary); margin-bottom: 20px;">Sonuçlar</h3>
+                            <div class="stats-grid" style="justify-content: center;">
+                                <div class="stat-card" style="border-color: rgba(52, 168, 83, 0.3); background: rgba(52, 168, 83, 0.05);">
+                                    <div class="stat-value" id="gen-correct-count" style="color: #34A853;">0</div>
+                                    <div class="stat-label">Doğru</div>
+                                </div>
+                                <div class="stat-card" style="border-color: rgba(255, 82, 82, 0.3); background: rgba(255, 82, 82, 0.05);">
+                                    <div class="stat-value" id="gen-wrong-count" style="color: #ff5252;">0</div>
+                                    <div class="stat-label">Yanlış</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Daily Challenge Section -->
+            <section id="daily-section" class="tab-section glass-panel">
+                <div class="daily-layout">
+                    <!-- Left Column -->
+                    <div class="daily-main">
+                        <!-- Token Ödül Bilgi Kartı -->
+                        <div id="daily-token-info" class="daily-token-info" style="display: none;">
+                            <span>5 sorudan 3'ünü doğru cevapla <strong>+2 token</strong> kazan. (%50 üzeri başarı)</span>
+                        </div>
+
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                            <h2>Daily Challenge</h2>
+                            <span id="daily-status-badge" class="highlight"
+                                style="font-weight: 600; padding: 4px 12px; border-radius: 20px; border: 1px solid var(--primary-color);">Checking...</span>
+                        </div>
+
+                        <div id="daily-loading" class="spinner" style="display: none; margin: 40px auto;"></div>
+
+                        <div id="daily-content-container" style="display: none;">
+                            <h3 id="daily-title" style="margin-bottom: 10px;"></h3>
+                            <div class="meta" style="margin-bottom: 20px;">
+                                <span id="daily-topic"></span>
+                                <span id="daily-level"></span>
+                            </div>
+                            <div id="daily-text"
+                                style="white-space: pre-wrap; color: #e2e8f0; line-height: 1.8; font-size: 1.1rem; margin-bottom: 30px;">
+                            </div>
+
+                            <button id="daily-go-questions-btn" class="primary-btn" style="width: 100%;">
+                                <span class="btn-text">Sorulara Geç</span>
+                            </button>
+                        </div>
+
+                        <div id="daily-questions-container" style="display: none; margin-top: 30px;">
+                            <h3 style="margin-bottom: 20px; color: var(--primary-color);">Reading Comprehension</h3>
+                            <div id="daily-questions-list"></div>
+                            <button id="daily-submit-btn" class="primary-btn"
+                                style="width: 100%; margin-top: 20px; display: none;">
+                                <span class="btn-text">Yanıtları Gönder</span>
+                            </button>
+                        </div>
+
+                        <div id="daily-result-container" style="display: none; text-align: center; padding: 40px 0;">
+                            <h2 style="color: #34A853; margin-bottom: 10px;">Tebrikler!</h2>
+                            <p style="font-size: 1.2rem; color: var(--text-main);">Günün çalışmasını tamamladınız.</p>
+
+                            <!-- Token Ödülü Animasyonu -->
+                            <div id="token-reward-animation" class="token-reward-anim" style="display: none;">
+                                <div class="token-reward-text">+2 Token Kazandınız!</div>
+                                <div class="token-reward-sub">%50 üzeri başarı ödülü</div>
+                            </div>
+
+                            <div id="streak-animation" class="streak-anim"
+                                style="display: none; font-size: 4rem; margin: 20px 0;">
+                                🔥 <span id="anim-streak-value">1</span>
+                                <div style="font-size: 1.2rem; color: #FF9800; font-weight: bold; margin-top: 10px;">
+                                    Seri Büyüyor!</div>
+                            </div>
+                            <p id="rank-info" style="color: var(--text-muted); display: none;">Güncel Sıralamanız:
+                                <strong style="color: white;">#<span id="rank-value"></span></strong>
+                            </p>
+
+                            <div id="daily-stats-row" class="stats-grid" style="margin-top: 30px; justify-content: center;">
+                                <div class="stat-card"
+                                    style="border-color: rgba(52, 168, 83, 0.3); background: rgba(52, 168, 83, 0.05);">
+                                    <div class="stat-value highlight" id="daily-correct-count" style="color: #34A853;">0
+                                    </div>
+                                    <div class="stat-label">Doğru</div>
+                                </div>
+                                <div class="stat-card"
+                                    style="border-color: rgba(255, 82, 82, 0.3); background: rgba(255, 82, 82, 0.05);">
+                                    <div class="stat-value highlight" id="daily-wrong-count" style="color: #ff5252;">0
+                                    </div>
+                                    <div class="stat-label">Yanlış</div>
+                                </div>
+                            </div>
+
+                            <!-- Yarın Tekrar Gel Hatırlatması -->
+                            <div id="daily-comeback-reminder" class="daily-comeback" style="display: none;">
+                                <span>Yarın tekrar gel, serini devam ettir. Her gün +2 token kazanma şansın var.</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column -->
+                    <div class="daily-sidebar">
+                        <div class="leaderboard-card">
+                            <h3 style="margin-top: 0; margin-bottom: 15px; color: #FF9800; text-align: center;">🔥 Top
+                                Streaks</h3>
+                            <ul id="leaderboard-list" class="leaderboard-list">
+                                <div class="spinner" style="margin: 0 auto; width: 24px; height: 24px;"></div>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Past Texts Section -->
+            <section id="past-texts-section" class="tab-section glass-panel">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h2>My Texts</h2>
+                    <input type="text" id="search-texts" class="search-input" placeholder="Search topics or titles...">
+                </div>
+                <div id="past-texts-list" class="list-container">
+                    <div class="spinner" style="margin: 0 auto;"></div>
+                </div>
+                <!-- Pagination Controls -->
+                <div id="past-texts-pagination" class="pagination-controls"
+                    style="display: flex; justify-content: center; align-items: center; gap: 15px; margin-top: 20px; display: none;">
+                    <button id="past-texts-prev" class="secondary-btn" disabled>&laquo; Prev</button>
+                    <span id="past-texts-page-info" style="color: var(--text-muted);">Page 1 of 1</span>
+                    <button id="past-texts-next" class="secondary-btn" disabled>Next &raquo;</button>
+                </div>
+            </section>
+
+            <!-- Dictionary Section -->
+            <section id="dictionary-section" class="tab-section glass-panel">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h2>Vocabulary</h2>
+                    <input type="text" id="search-dict" class="search-input" placeholder="Search words...">
+                </div>
+                <ul id="dictionary-list" class="keywords-grid">
+                    <div class="spinner" style="margin: 0 auto;"></div>
+                </ul>
+                <!-- Pagination Controls -->
+                <div id="dict-pagination" class="pagination-controls"
+                    style="display: flex; justify-content: center; align-items: center; gap: 15px; margin-top: 20px; display: none;">
+                    <button id="dict-prev" class="secondary-btn" disabled>&laquo; Prev</button>
+                    <span id="dict-page-info" style="color: var(--text-muted);">Page 1 of 1</span>
+                    <button id="dict-next" class="secondary-btn" disabled>Next &raquo;</button>
+                </div>
+            </section>
+
+            <!-- Stats Section -->
+            <section id="stats-section" class="tab-section glass-panel">
+                <div class="stats-header">
+                    <h2>📊 My Progress</h2>
+                    <span id="stats-last-updated" class="stats-updated"></span>
+                </div>
+
+                <!-- Üst Özet Kartları -->
+                <div class="stats-summary-row">
+                    <div class="stat-summary-card streak-card">
+                        <div class="ss-icon">🔥</div>
+                        <div class="ss-content">
+                            <div class="ss-value" id="stat-streak">-</div>
+                            <div class="ss-label">Daily Streak</div>
+                        </div>
+                    </div>
+                    <div class="stat-summary-card tokens-card">
+                        <div class="ss-icon">🪙</div>
+                        <div class="ss-content">
+                            <div class="ss-value" id="stat-tokens">-</div>
+                            <div class="ss-label">Available Tokens</div>
+                        </div>
+                    </div>
+                    <div class="stat-summary-card texts-card">
+                        <div class="ss-icon">📝</div>
+                        <div class="ss-content">
+                            <div class="ss-value" id="stat-texts-count">-</div>
+                            <div class="ss-label">Generated Texts</div>
+                        </div>
+                    </div>
+                    <div class="stat-summary-card words-card">
+                        <div class="ss-icon">📖</div>
+                        <div class="ss-content">
+                            <div class="ss-value" id="stat-generated-words">-</div>
+                            <div class="ss-label">Total Words Read</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Grafikler Bölümü -->
+                <div class="stats-charts-row">
+                    <!-- Vocabulary Breakdown -->
+                    <div class="chart-panel">
+                        <h3 class="chart-title">📚 Vocabulary Breakdown</h3>
+                        <div class="chart-wrapper">
+                            <canvas id="vocabChart"></canvas>
+                        </div>
+                        <div class="chart-legend-row">
+                            <span class="legend-item">
+                                <span class="legend-dot" style="background: #34A853;"></span> Mastered: <strong id="stat-learned-words">-</strong>
+                            </span>
+                            <span class="legend-item">
+                                <span class="legend-dot" style="background: #FF9800;"></span> Learning: <strong id="stat-pending-words">-</strong>
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Question Performance -->
+                    <div class="chart-panel">
+                        <h3 class="chart-title">🎯 Question Performance</h3>
+                        <div class="chart-wrapper">
+                            <canvas id="questionsChart"></canvas>
+                        </div>
+                        <div class="chart-legend-row">
+                            <span class="legend-item">
+                                <span class="legend-dot" style="background: #34A853;"></span> Correct
+                            </span>
+                            <span class="legend-item">
+                                <span class="legend-dot" style="background: #ff5252;"></span> Wrong
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detaylı İstatistikler -->
+                <div class="stats-detail-section">
+                    <h3 class="chart-title">📋 Detailed Stats</h3>
+                    <div class="stats-grid">
+                        <div class="stat-card stat-detail">
+                            <div class="stat-icon">🏷️</div>
+                            <div class="stat-info">
+                                <div class="stat-value highlight" id="stat-unique-topics">-</div>
+                                <div class="stat-label">Unique Topics</div>
+                            </div>
+                        </div>
+                        <div class="stat-card stat-detail">
+                            <div class="stat-icon">🎓</div>
+                            <div class="stat-info">
+                                <div class="stat-value highlight" id="stat-favorite-level">-</div>
+                                <div class="stat-label">Favorite Level</div>
+                            </div>
+                        </div>
+                        <div class="stat-card stat-detail">
+                            <div class="stat-icon">📚</div>
+                            <div class="stat-info">
+                                <div class="stat-value highlight" id="stat-dict-words">-</div>
+                                <div class="stat-label">Vocabulary Size</div>
+                            </div>
+                        </div>
+                        <div class="stat-card stat-detail">
+                            <div class="stat-icon">✅</div>
+                            <div class="stat-info">
+                                <div class="stat-value highlight" id="stat-text-q-answered">-</div>
+                                <div class="stat-label">Texts Answered</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Günlük Başarı Oranı -->
+                <div class="stats-detail-section" id="daily-accuracy-section" style="display: none;">
+                    <h3 class="chart-title">📈 Daily Challenge Accuracy</h3>
+                    <div class="accuracy-bar-wrapper">
+                        <div class="accuracy-bar-track">
+                            <div class="accuracy-bar-fill" id="daily-accuracy-bar" style="width: 0%;"></div>
+                        </div>
+                        <div class="accuracy-stats">
+                            <span class="accuracy-correct">✅ <strong id="stat-total-correct">-</strong> correct</span>
+                            <span class="accuracy-total" id="daily-accuracy-pct">-%</span>
+                            <span class="accuracy-wrong">❌ <strong id="stat-total-wrong">-</strong> wrong</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Metin Soruları Başarı Oranı -->
+                <div class="stats-detail-section" id="textq-accuracy-section" style="display: none;">
+                    <h3 class="chart-title">📝 Text Questions Accuracy</h3>
+                    <div class="accuracy-bar-wrapper">
+                        <div class="accuracy-bar-track">
+                            <div class="accuracy-bar-fill textq-bar" id="textq-accuracy-bar" style="width: 0%;"></div>
+                        </div>
+                        <div class="accuracy-stats">
+                            <span class="accuracy-correct">✅ <strong id="stat-text-q-correct">-</strong> correct</span>
+                            <span class="accuracy-total" id="textq-accuracy-pct">-%</span>
+                            <span class="accuracy-wrong">❌ <strong id="stat-text-q-wrong">-</strong> wrong</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Admin Section -->
+            <section id="admin-section" class="tab-section glass-panel">
+                <h2 style="color: #ff5252;">Admin Dashboard</h2>
+                <div class="stats-grid">
+                    <div class="stat-card" style="border-color: rgba(255,82,82,0.3); background: rgba(255,82,82,0.05);">
+                        <div class="stat-value highlight" id="admin-total-users" style="color: #ff5252;">-</div>
+                        <div class="stat-label">Total Users</div>
+                    </div>
+                    <div class="stat-card" style="border-color: rgba(255,82,82,0.3); background: rgba(255,82,82,0.05);">
+                        <div class="stat-value highlight" id="admin-total-texts" style="color: #ff5252;">-</div>
+                        <div class="stat-label">Total Generated Texts</div>
+                    </div>
+                </div>
+
+                <div class="glass-panel" style="margin-top: 20px;">
+                    <div class="admin-controls-wrapper"
+                        style="display: flex; gap: 10px; margin-bottom: 20px; align-items: center; justify-content: space-between;">
+                        <div class="admin-search-wrapper" style="display: flex; gap: 10px; flex-grow: 1;">
+                            <input type="text" id="search-admin" class="search-input"
+                                placeholder="Search by email or nickname..."
+                                style="border-color: rgba(255,82,82,0.3); width: 100%; max-width: 400px;">
+                            <button id="search-admin-btn" class="primary-btn"
+                                style="background: rgba(255,82,82,0.1); color: #ff5252; border: 1px solid rgba(255,82,82,0.3); min-width: 100px;">Search</button>
+                        </div>
+                        <div class="admin-btn-wrapper" style="display: flex; gap: 10px;">
+                            <button id="btn-manage-notifs" class="secondary-btn"
+                                style="color: #ff5252; border: 1px solid rgba(255,82,82,0.3); padding: 8px 16px; font-size: 0.9rem;">📋
+                                Manage Notifications</button>
+                            <button id="btn-open-global-notif" class="primary-btn"
+                                style="background: #ff5252; color: white; border: none; padding: 8px 16px; font-size: 0.9rem;">📢
+                                Send Notification</button>
+                        </div>
+                    </div>
+                    <div style="overflow-x: auto;">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Email</th>
+                                    <th>Nickname</th>
+                                    <th>Tokens</th>
+                                    <th>Role</th>
+                                    <th>Streak</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-users-list">
+                                <!-- JS ile doldurulacak -->
+                            </tbody>
+                        </table>
+
+                        <!-- Pagination Controls -->
+                        <div id="admin-pagination" class="pagination-controls"
+                            style="display: flex; justify-content: center; align-items: center; gap: 15px; margin-top: 20px;">
+                            <button id="admin-prev" class="secondary-btn" disabled>&laquo; Prev</button>
+                            <span id="admin-page-info" style="color: var(--text-muted);">Page 1 of 1</span>
+                            <button id="admin-next" class="secondary-btn" disabled>Next &raquo;</button>
+                        </div>
+                    </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Admin User Management Modal -->
+    <div id="admin-manage-modal" class="screen"
+        style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; display: none; justify-content: center; align-items: center;">
+        <div class="glass-panel" style="max-width: 500px; width: 90%; position: relative;">
+            <button id="admin-close-modal-btn"
+                style="position: absolute; top: 10px; right: 15px; background: transparent; border: none; font-size: 1.5rem; color: var(--text-muted); cursor: pointer;">&times;</button>
+            <h2 style="color: var(--primary); margin-bottom: 5px;">Manage User</h2>
+            <p id="admin-manage-email" style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px;">
+                user@example.com</p>
+
+            <div
+                style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 20px; background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px;">
+                <div style="text-align: center;">
+                    <div id="admin-stat-texts" style="font-size: 1.2rem; font-weight: bold; color: var(--primary);">0
+                    </div>
+                    <div style="font-size: 0.8rem; color: var(--text-muted);">Texts</div>
+                </div>
+                <div style="text-align: center;">
+                    <div id="admin-stat-words" style="font-size: 1.2rem; font-weight: bold; color: var(--primary);">0
+                    </div>
+                    <div style="font-size: 0.8rem; color: var(--text-muted);">Dict Words</div>
+                </div>
+                <div style="text-align: center;">
+                    <div id="admin-stat-daily" style="font-size: 1.2rem; font-weight: bold; color: var(--primary);">0
+                    </div>
+                    <div style="font-size: 0.8rem; color: var(--text-muted);">Daily Subs</div>
+                </div>
+            </div>
+
+            <form id="admin-update-form">
+                <input type="hidden" id="admin-manage-uid">
+                <div class="input-group">
+                    <label>Nickname:</label>
+                    <input type="text" id="admin-manage-nickname">
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div class="input-group">
+                        <label>Tokens:</label>
+                        <input type="number" id="admin-manage-tokens" min="0">
+                    </div>
+                    <div class="input-group">
+                        <label>Streak:</label>
+                        <input type="number" id="admin-manage-streak" min="0">
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label>Role:</label>
+                    <select id="admin-manage-role"
+                        style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--panel-border); background: var(--panel-bg); color: var(--text); outline: none;">
+                        <option value="user">User</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                </div>
+                <button type="submit" class="primary-btn" style="width: 100%; margin-top: 10px;">Save Changes</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Nickname Setup Modal -->
+    <div id="nickname-modal" class="screen"
+        style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center;">
+        <div class="glass-panel" style="max-width: 400px; width: 90%; text-align: center;">
+            <h2 style="color: var(--primary);">Choose Your Nickname</h2>
+            <p style="margin-bottom: 20px;">This name will be shown on the leaderboards.</p>
+            <div class="input-group">
+                <input type="text" id="nickname-input" placeholder="e.g. CahilMaster" required minlength="3">
+            </div>
+            <button id="save-nickname-btn" class="primary-btn">Save Nickname</button>
+        </div>
+    </div>
+
+    <!-- Admin Notification Modal -->
+    <div id="admin-notif-modal" class="modal"
+        style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.7); backdrop-filter: blur(5px);">
+        <div class="modal-content glass-panel"
+            style="margin: 10% auto; padding: 30px; width: 90%; max-width: 500px; border-radius: 20px; position: relative;">
+            <span id="close-notif-modal"
+                style="position: absolute; right: 20px; top: 20px; font-size: 28px; font-weight: bold; cursor: pointer; color: var(--text-muted);">&times;</span>
+            <h2 style="color: #ff5252; margin-top: 0;">Send Notification</h2>
+            <form id="admin-notification-form"
+                style="display: flex; flex-direction: column; gap: 15px; margin-top: 20px;">
+                <div class="input-group">
+                    <label>Audience:</label>
+                    <select id="admin-notif-audience"
+                        style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--panel-border); background: var(--panel-bg); color: var(--text); outline: none;">
+                        <option value="global">All Users (Global)</option>
+                        <option value="private">Specific User (Private)</option>
+                    </select>
+                </div>
+                <div class="input-group" id="admin-notif-email-group" style="display: none;">
+                    <label>User Email:</label>
+                    <input type="email" id="admin-notif-email" placeholder="user@example.com"
+                        style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--panel-border); background: var(--panel-bg); color: var(--text); outline: none;">
+                </div>
+                <div class="input-group">
+                    <label>Title:</label>
+                    <input type="text" id="admin-notif-title" placeholder="Notification Title" required
+                        style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--panel-border); background: var(--panel-bg); color: var(--text); outline: none;">
+                </div>
+                <div class="input-group">
+                    <label>Message:</label>
+                    <textarea id="admin-notif-message" rows="4" placeholder="Notification Message" required
+                        style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--panel-border); background: var(--panel-bg); color: var(--text); outline: none;"></textarea>
+                </div>
+                <button type="submit" class="primary-btn"
+                    style="background: #ff5252; color: white; border: none; padding: 12px; margin-top: 10px;">Send
+                    Notification</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Admin Manage Notifications Modal -->
+    <div id="admin-manage-notifs-modal" class="modal"
+        style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.7); backdrop-filter: blur(5px);">
+        <div class="modal-content glass-panel"
+            style="margin: 5% auto; padding: 30px; width: 90%; max-width: 800px; border-radius: 20px; position: relative;">
+            <span id="close-manage-notifs-modal"
+                style="position: absolute; right: 20px; top: 20px; font-size: 28px; font-weight: bold; cursor: pointer; color: var(--text-muted);">&times;</span>
+            <h2 style="color: #ff5252; margin-top: 0;">Manage Notifications</h2>
+            <div style="overflow-x: auto; margin-top: 20px;">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Audience</th>
+                            <th>Title / Message</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin-notifs-list">
+                        <!-- Filled by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin User Texts Modal -->
+    <div id="admin-user-texts-modal" class="modal"
+        style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.7); backdrop-filter: blur(5px);">
+        <div class="modal-content glass-panel"
+            style="margin: 5% auto; padding: 30px; width: 90%; max-width: 800px; border-radius: 20px; position: relative;">
+            <span id="close-user-texts-modal"
+                style="position: absolute; right: 20px; top: 20px; font-size: 28px; font-weight: bold; cursor: pointer; color: var(--text-muted);">&times;</span>
+            <h2 id="admin-user-texts-title" style="color: var(--primary-color); margin-top: 0;">User Texts</h2>
+            <div id="admin-user-texts-list"
+                style="margin-top: 20px; max-height: 60vh; overflow-y: auto; display: flex; flex-direction: column; gap: 15px;">
+                <!-- Texts will be dynamically added here -->
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="app.js"></script>
+</body>
+
+</html>

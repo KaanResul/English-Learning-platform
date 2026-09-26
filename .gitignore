@@ -1,0 +1,18 @@
+# Local credentials and environment files
+.env
+.env.*
+!.env.example
+serviceAccountKey.json
+*serviceAccount*.json
+*service-account*.json
+*.pem
+*.key
+
+# Generated and local files
+node_modules/
+.vercel/
+.DS_Store
+*.log
+coverage/
+dist/
+build/
